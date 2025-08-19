@@ -107,6 +107,7 @@ def start_flask_server():
 
         print("📱 Web UI will be available at: http://localhost:5000")
         print("🔧 API will be available at: http://localhost:5000/api/")
+        print("💡 Note: This is production mode. For development with hot reload, use dev_server.py")
         print("⏹️  Press Ctrl+C to stop the server")
         print()
 

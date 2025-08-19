@@ -67,9 +67,23 @@ pip install -r requirements.txt
 
 ### 🌐 **Web Interface (Recommended for most users)**
 For a beautiful, user-friendly web interface:
-- **Quick Start**: See [WEB_UI_USAGE.md](WEB_UI_USAGE.md) for step-by-step instructions
-- **Features**: Modern UI with drag-and-drop, real-time progress, and mobile support
-- **Start**: Run `python start_web_app.py` and open http://localhost:5000
+
+#### 🚀 **Production Mode (Recommended for users)**
+- **Quick Start**: Use our cross-platform startup scripts for automatic setup:
+  - **Linux/macOS**: `./start_server.sh`
+  - **Windows**: `start_server.bat` or `.\start_server.ps1`
+  - **Port**: http://localhost:5000 (Web UI + API)
+  - **See**: [STARTUP_SCRIPTS_README.md](STARTUP_SCRIPTS_README.md) for detailed instructions
+- **Manual Start**: Run `python start_web_app.py` and open http://localhost:5000
+
+#### 🔧 **Development Mode (For developers)**
+- **Hot Reload**: Run `python dev_server.py` for development with live updates
+- **Ports**: Web UI on port 3000, API on port 5000
+- **Features**: Real-time code updates, development tools, separate frontend/backend
+
+#### ✨ **Features**
+- Modern UI with drag-and-drop, real-time progress, and mobile support
+- See [WEB_UI_USAGE.md](WEB_UI_USAGE.md) for step-by-step instructions
 
 ### 🖥️ **Command Line Interface**
 For advanced users and automation:
