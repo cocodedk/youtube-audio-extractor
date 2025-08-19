@@ -347,7 +347,7 @@ This project uses a **custom MIT license with mandatory attribution requirements
 
 ## 📞 Contact
 
-For questions about this license or the project, please contact: [Your Contact Information]
+For questions about this license or the project, please contact: COCODE.DK
 
 ---
 

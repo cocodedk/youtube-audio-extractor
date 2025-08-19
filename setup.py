@@ -18,7 +18,7 @@ setup(
     description="A command-line tool to extract audio from YouTube videos",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/youtube-audio-extractor",
+    url="https://github.com/cocodedk/youtube-audio-extractor",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
