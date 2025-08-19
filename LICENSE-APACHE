@@ -1,0 +1,56 @@
+Apache License, Version 2.0 with Additional Protections
+
+Copyright (c) 2025 COCODE.DK
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+ADDITIONAL TERMS AND CONDITIONS:
+
+1. Attribution Requirements:
+   - Any distribution, modification, or derivative work must prominently
+     display the original copyright notice
+   - Include a link to the original repository
+   - Maintain the Apache License header
+
+2. Derivative Works:
+   - Must clearly indicate they are derived from this project
+   - Cannot claim exclusive ownership or authorship
+   - Must provide attribution to the original work
+
+3. Commercial Use:
+   - Permitted with proper attribution
+   - Cannot misrepresent the relationship with the original work
+   - Must comply with all license terms
+
+4. Third-Party Dependencies:
+   - Users are responsible for complying with all third-party licenses
+   - This includes yt-dlp, FFmpeg, click, and other dependencies
+
+5. YouTube Compliance:
+   - Users must comply with YouTube's Terms of Service
+   - Users must respect copyright laws
+   - Authors do not endorse unauthorized content downloading
+
+6. Limitation of Liability:
+   - Copyright holder is not liable for any damages
+   - Users use the software at their own risk
+   - No warranty is provided
+
+7. Jurisdiction:
+   - Governed by the laws of [Your Country/State]
+   - Any disputes subject to local jurisdiction
+
+By using, copying, modifying, or distributing this software, you agree to
+be bound by both the Apache License 2.0 and these additional terms.
+
+For questions about this license, please contact: [Your Contact Information]
