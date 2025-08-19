@@ -1,7 +1,7 @@
-import { Header } from './components/header';
-import { TabManager } from './components/tab-manager';
 import { DownloadForm } from './components/download-form';
 import { DownloadsList } from './components/downloads-list';
+import { TabManager } from './components/tab-manager';
+import { Header } from './components/header';
 import { About } from './components/about';
 
 export class App {

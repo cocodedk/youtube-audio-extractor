@@ -46,6 +46,16 @@ export class ApiService {
     return response.json();
   }
 
+  async getDownloadsStatus(): Promise<any> {
+    const response = await fetch('/api/downloads/status');
+    return response.json();
+  }
+
+  async getDownloadLocation(downloadId: string): Promise<any> {
+    const response = await fetch(`/api/downloads/${downloadId}/location`);
+    return response.json();
+  }
+
   async getChapters(url: string): Promise<any> {
     const encodedUrl = encodeURIComponent(url);
     const response = await fetch(`${this.baseUrl}/chapters/${encodedUrl}`);

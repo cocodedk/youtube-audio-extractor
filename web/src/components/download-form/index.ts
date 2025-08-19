@@ -1,4 +1,7 @@
-import { ApiService } from '../services/api-service';
+import { ApiService } from '../../services/api-service';
+import { ProgressBar } from './progress-bar';
+import { CompletionHandler } from './completion-handler';
+import { TestUtils } from './test-utils';
 
 export class DownloadForm {
   public element: HTMLElement;
@@ -7,10 +10,22 @@ export class DownloadForm {
   private isDownloading: boolean = false;
   private currentMode: 'download' | 'playlist' = 'download';
 
+  // Component instances
+  private progressBar: ProgressBar;
+  private completionHandler: CompletionHandler;
+  private testUtils: TestUtils;
+
   constructor() {
     this.apiService = new ApiService();
     this.element = this.createDownloadForm();
+
+    // Initialize components
+    this.progressBar = new ProgressBar(this.element);
+    this.completionHandler = new CompletionHandler(this.element, this.apiService);
+    this.testUtils = new TestUtils(this.element, this.apiService);
+
     this.setupEventListeners();
+    this.setupTestEventListeners();
   }
 
   public setMode(mode: 'download' | 'playlist'): void {
@@ -203,6 +218,71 @@ export class DownloadForm {
             </svg>
             Download Playlist
           </button>
+          <button
+            type="button"
+            id="testProgressBtn"
+            class="btn-secondary"
+          >
+            Test Progress Bar
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progressContainer" class="hidden space-y-4">
+          <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-medium text-gray-200">Download Progress</h3>
+              <div class="flex items-center space-x-2">
+                <span id="progressStatus" class="text-sm text-gray-400">Initializing...</span>
+                <button id="closeProgressBtn" class="text-gray-400 hover:text-white p-1 rounded">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Overall Progress Bar -->
+            <div class="mb-3">
+              <div class="flex justify-between text-sm text-gray-400 mb-1">
+                <span id="progressText">0%</span>
+                <span id="progressDetails">0 B / 0 B</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div id="progressBar" class="bg-primary-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Current Step -->
+            <div id="currentStep" class="text-sm text-gray-300 mb-3">
+              <div class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-primary-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span id="stepText">Initializing download...</span>
+              </div>
+            </div>
+
+            <!-- Playlist Progress (for playlist downloads) -->
+            <div id="playlistProgress" class="hidden">
+              <div class="flex justify-between text-sm text-gray-400 mb-1">
+                <span>Video Progress</span>
+                <span id="videoProgress">0 / 0</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-1.5">
+                <div id="videoProgressBar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Speed and ETA -->
+            <div id="speedInfo" class="hidden text-sm text-gray-400">
+              <div class="flex justify-between">
+                <span id="downloadSpeed">Speed: 0 B/s</span>
+                <span id="downloadEta">ETA: --</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Status Messages -->
@@ -251,6 +331,43 @@ export class DownloadForm {
     playlistBtn.addEventListener('click', () => {
       this.handlePlaylistDownload();
     });
+
+    // Test progress bar button
+    const testProgressBtn = this.element.querySelector('#testProgressBtn') as HTMLButtonElement;
+    testProgressBtn.addEventListener('click', () => {
+      this.testUtils.testProgressBar();
+    });
+  }
+
+  private setupTestEventListeners(): void {
+    // Listen for test events
+    this.element.addEventListener('testDownloadStarted', ((event: CustomEvent) => {
+      const { downloadId } = event.detail;
+      this.progressBar.startProgressTracking(downloadId);
+      this.completionHandler.setDownloadId(downloadId);
+    }) as EventListener);
+
+    this.element.addEventListener('testProgressUpdate', ((event: CustomEvent) => {
+      const { data } = event.detail;
+      this.progressBar.updateProgress(data);
+
+      // Handle completion
+      if (data.status === 'completed' || data.status === 'failed' || data.status === 'error') {
+        this.completionHandler.handleDownloadComplete(data.status === 'completed');
+      }
+    }) as EventListener);
+
+        // Listen for real download completion events from ProgressBar
+    this.element.addEventListener('downloadCompleted', ((event: CustomEvent) => {
+      const { success, data } = event.detail;
+
+      // Don't call updateProgress again - it already handled the completion
+      // Just handle the completion UI
+      this.completionHandler.handleDownloadComplete(success);
+
+      // Re-enable buttons after completion
+      this.setDownloadingState(false);
+    }) as EventListener);
   }
 
   private async handleDownload(): Promise<void> {
@@ -265,13 +382,15 @@ export class DownloadForm {
     try {
       const response = await this.apiService.downloadVideo(formData);
       this.showStatus('Download started successfully!', 'success');
+      this.progressBar.show();
+      this.progressBar.startProgressTracking(response.download_id);
+      this.completionHandler.setDownloadId(response.download_id);
 
       if (this.onDownloadStartedCallback) {
         this.onDownloadStartedCallback();
       }
     } catch (error) {
       this.showStatus(`Download failed: ${error}`, 'error');
-    } finally {
       this.setDownloadingState(false);
     }
   }
@@ -288,13 +407,16 @@ export class DownloadForm {
     try {
       const response = await this.apiService.downloadPlaylist(formData);
       this.showStatus('Playlist download started successfully!', 'success');
+      this.progressBar.show();
+      this.progressBar.startProgressTracking(response.download_id);
+      this.progressBar.showPlaylistProgress();
+      this.completionHandler.setDownloadId(response.download_id);
 
       if (this.onDownloadStartedCallback) {
         this.onDownloadStartedCallback();
       }
     } catch (error) {
       this.showStatus(`Playlist download failed: ${error}`, 'error');
-    } finally {
       this.setDownloadingState(false);
     }
   }

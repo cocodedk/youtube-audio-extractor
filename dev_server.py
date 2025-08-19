@@ -25,6 +25,21 @@ def check_dependencies():
         print("Please run: pip install -r requirements.txt")
         return False
 
+    # Check yt-dlp version and update if needed
+    try:
+        import yt_dlp
+        current_version = yt_dlp.version.__version__
+        print(f"✅ yt-dlp {current_version} OK")
+
+        # Check if yt-dlp is recent enough for YouTube compatibility
+        if current_version < "2025.0.0":
+            print("⚠️  yt-dlp version may be outdated for YouTube compatibility")
+            print("💡 Consider updating with: pip install --upgrade yt-dlp")
+    except ImportError as e:
+        print(f"❌ Missing yt-dlp: {e}")
+        print("Please run: pip install -r requirements.txt")
+        return False
+
     # Check Node.js and npm
     try:
         result = subprocess.run(['node', '--version'], capture_output=True, text=True)

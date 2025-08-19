@@ -72,6 +72,10 @@ install_python_deps() {
     print_status "Installing Python packages..."
     pip install -r requirements.txt
 
+    # Ensure yt-dlp is up to date for YouTube compatibility
+    print_status "Ensuring yt-dlp is up to date for YouTube compatibility..."
+    pip install --upgrade yt-dlp
+
     print_success "Python dependencies installed successfully!"
 }
 
@@ -128,7 +132,7 @@ start_server() {
     print_status "Press Ctrl+C to stop the server"
     echo
 
-    python start_web_app.py
+    python3 start_web_app.py
 }
 
 # Function to check system requirements
