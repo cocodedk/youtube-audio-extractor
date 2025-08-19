@@ -16,6 +16,7 @@ This project is licensed under the **MIT License with Attribution Requirements**
 
 ## ✨ Features
 
+- **🌐 Web Interface**: Beautiful, modern dark-themed web UI with TypeScript and Tailwind CSS, including About page
 - **🎬 Video Downloads**: Download audio from individual YouTube videos
 - **📚 Playlist Downloads**: Download entire YouTube playlists with organized folder structure
 - **🎚️ Bitrate Control**: Choose from 8 different audio quality levels (32-320 kbps)
@@ -64,7 +65,16 @@ pip install -r requirements.txt
 
 ## 📖 Usage
 
-### 🎬 Single Video Downloads
+### 🌐 **Web Interface (Recommended for most users)**
+For a beautiful, user-friendly web interface:
+- **Quick Start**: See [WEB_UI_USAGE.md](WEB_UI_USAGE.md) for step-by-step instructions
+- **Features**: Modern UI with drag-and-drop, real-time progress, and mobile support
+- **Start**: Run `python start_web_app.py` and open http://localhost:5000
+
+### 🖥️ **Command Line Interface**
+For advanced users and automation:
+
+#### 🎬 Single Video Downloads
 
 ```bash
 # Basic download (saves to downloads/)

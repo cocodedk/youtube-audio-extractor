@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+"""
+Flask web application for YouTube Audio Extractor
+Provides a REST API for the web UI
+"""
+
+import os
+import json
+import threading
+from pathlib import Path
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
+from youtube_audio_extractor.core import download_audio, validate_youtube_url
+from youtube_audio_extractor.playlists import download_playlist
+from youtube_audio_extractor.chapters import get_video_chapters, has_chapters
+from youtube_audio_extractor.formats import list_formats
+import subprocess
+import platform
+
+app = Flask(__name__)
+CORS(app)
+
+# Frontend is served by Webpack dev server in development
+# No need to serve or redirect from Flask
+
+@app.route('/api/health')
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'message': 'YouTube Audio Extractor API is running'
+    })
+
+@app.route('/api/download', methods=['POST'])
+def download_video():
+    """Download audio from a single YouTube video"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        output_dir = data.get('output_dir', 'downloads')
+        bitrate = data.get('bitrate', '192')
+        split_large_files = data.get('split_large_files', False)
+        split_by_chapters = data.get('split_by_chapters', False)
+
+        if not url:
+            return jsonify({'error': 'URL is required'}), 400
+
+        if not validate_youtube_url(url):
+            return jsonify({'error': 'Invalid YouTube URL'}), 400
+
+        # Start download in background thread
+        def download_task():
+            try:
+                download_audio(
+                    url=url,
+                    output_dir=output_dir,
+                    bitrate=bitrate,
+                    split_large_files=split_large_files,
+                    split_by_chapters=split_by_chapters
+                )
+            except Exception as e:
+                print(f"Download error: {e}")
+
+        thread = threading.Thread(target=download_task)
+        thread.daemon = True
+        thread.start()
+
+        return jsonify({
+            'message': 'Download started successfully',
+            'url': url,
+            'output_dir': output_dir
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/playlist', methods=['POST'])
+def download_playlist_endpoint():
+    """Download audio from a YouTube playlist"""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        output_dir = data.get('output_dir', 'downloads')
+        bitrate = data.get('bitrate', '192')
+        split_large_files = data.get('split_large_files', False)
+        split_by_chapters = data.get('split_by_chapters', False)
+        start_index = data.get('start_index', 1)
+        end_index = data.get('end_index')
+
+        if not url:
+            return jsonify({'error': 'URL is required'}), 400
+
+        if not validate_youtube_url(url):
+            return jsonify({'error': 'Invalid YouTube URL'}), 400
+
+        # Start download in background thread
+        def download_task():
+            try:
+                download_playlist(
+                    url=url,
+                    output_dir=output_dir,
+                    bitrate=bitrate,
+                    split_large_files=split_large_files,
+                    split_by_chapters=split_by_chapters,
+                    start_index=start_index,
+                    end_index=end_index
+                )
+            except Exception as e:
+                print(f"Playlist download error: {e}")
+
+        thread = threading.Thread(target=download_task)
+        thread.daemon = True
+        thread.start()
+
+        return jsonify({
+            'message': 'Playlist download started successfully',
+            'url': url,
+            'output_dir': output_dir
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/chapters/<path:url>')
+def get_chapters(url):
+    """Get video chapters for a YouTube URL"""
+    try:
+        if not validate_youtube_url(url):
+            return jsonify({'error': 'Invalid YouTube URL'}), 400
+
+        chapters = get_video_chapters(url)
+        has_chapters_info = has_chapters(url)
+
+        return jsonify({
+            'chapters': chapters,
+            'has_chapters': has_chapters_info
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/formats/<path:url>')
+def get_formats(url):
+    """Get available formats for a YouTube URL"""
+    try:
+        if not validate_youtube_url(url):
+            return jsonify({'error': 'Invalid YouTube URL'}), 400
+
+        formats = list_formats(url)
+
+        return jsonify({
+            'formats': formats
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/downloads')
+def list_downloads():
+    """List all downloaded files and folders"""
+    try:
+        downloads_dir = Path('downloads')
+        if not downloads_dir.exists():
+            return jsonify({'downloads': []})
+
+        downloads = []
+
+        for item in downloads_dir.iterdir():
+            if item.is_file() and item.suffix.lower() == '.mp3':
+                # MP3 file
+                downloads.append({
+                    'name': item.name,
+                    'type': 'file',
+                    'size': item.stat().st_size,
+                    'modified': item.stat().st_mtime
+                })
+            elif item.is_dir():
+                # Folder - count MP3 files inside
+                mp3_count = len(list(item.glob('*.mp3')))
+                downloads.append({
+                    'name': item.name,
+                    'type': 'folder',
+                    'mp3_count': mp3_count,
+                    'modified': item.stat().st_mtime
+                })
+
+        # Sort by modification time (newest first)
+        downloads.sort(key=lambda x: x['modified'], reverse=True)
+
+        return jsonify({'downloads': downloads})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/bitrates')
+def get_bitrates():
+    """Get available bitrate options"""
+    return jsonify({
+        'bitrates': [
+            {'value': '32', 'label': '32 kbps - Very Low (Podcasts, voice)'},
+            {'value': '64', 'label': '64 kbps - Low (Basic audio)'},
+            {'value': '96', 'label': '96 kbps - Fair (Good balance)'},
+            {'value': '128', 'label': '128 kbps - Good (Music, general use)'},
+            {'value': '160', 'label': '160 kbps - Better (High-quality music)'},
+            {'value': '192', 'label': '192 kbps - High (Default - Best balance)'},
+            {'value': '256', 'label': '256 kbps - Very High (Lossless-like)'},
+            {'value': '320', 'label': '320 kbps - Maximum (Studio quality)'}
+        ]
+    })
+
+@app.route('/api/open-folder', methods=['POST'])
+def open_folder():
+    """Open file browser at specified location"""
+    try:
+        data = request.get_json()
+        folder_path = data.get('path')
+
+        if not folder_path:
+            return jsonify({'error': 'Path is required'}), 400
+
+        # Ensure the path is within the downloads directory for security
+        downloads_dir = Path('downloads').resolve()
+        target_path = Path(folder_path).resolve()
+
+        if not target_path.is_relative_to(downloads_dir):
+            return jsonify({'error': 'Access denied: Path outside downloads directory'}), 403
+
+        # Open file browser based on platform
+        system = platform.system().lower()
+
+        try:
+            if system == 'darwin':  # macOS
+                subprocess.run(['open', str(target_path)], check=True)
+            elif system == 'windows':
+                subprocess.run(['explorer', str(target_path)], check=True)
+            else:  # Linux and others
+                # Try common file managers
+                file_managers = ['xdg-open', 'nautilus', 'dolphin', 'thunar', 'pcmanfm']
+                for manager in file_managers:
+                    try:
+                        subprocess.run([manager, str(target_path)], check=True)
+                        break
+                    except (subprocess.CalledProcessError, FileNotFoundError):
+                        continue
+                else:
+                    # Fallback to xdg-open which should work on most Linux systems
+                    subprocess.run(['xdg-open', str(target_path)], check=True)
+
+            return jsonify({
+                'message': 'File browser opened successfully',
+                'path': str(target_path)
+            })
+
+        except subprocess.CalledProcessError as e:
+            return jsonify({'error': f'Failed to open file browser: {str(e)}'}), 500
+        except FileNotFoundError:
+            return jsonify({'error': 'No suitable file browser found'}), 500
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

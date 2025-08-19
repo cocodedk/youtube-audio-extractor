@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-dark-900 text-gray-100 antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-800;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply btn bg-dark-700 text-gray-200 border-dark-600 hover:bg-dark-600 focus:ring-primary-500;
+  }
+
+  .btn-success {
+    @apply btn bg-success-600 text-white hover:bg-success-700 focus:ring-success-500;
+  }
+
+  .btn-warning {
+    @apply btn bg-warning-600 text-white hover:bg-warning-700 focus:ring-warning-500;
+  }
+
+  .btn-error {
+    @apply btn bg-error-600 text-white hover:bg-error-700 focus:ring-error-500;
+  }
+
+  .input {
+    @apply block w-full px-3 py-2 border border-dark-600 rounded-md shadow-sm placeholder-gray-400 bg-dark-800 text-gray-100 focus:outline-none focus:ring-primary-500 focus:border-primary-500;
+  }
+
+  .card {
+    @apply bg-dark-800 rounded-lg shadow-sm border border-dark-700 p-6;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply badge bg-success-900 text-success-200;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning-900 text-warning-200;
+  }
+
+  .badge-error {
+    @apply badge bg-error-900 text-error-200;
+  }
+
+  .badge-info {
+    @apply badge bg-primary-900 text-primary-200;
+  }
+
+  .tab-button {
+    @apply whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200;
+  }
+
+  .tab-button:not(.active) {
+    @apply border-transparent text-gray-400 hover:text-gray-200 hover:border-dark-600;
+  }
+
+  .tab-button.active {
+    @apply border-primary-500 text-primary-400;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
