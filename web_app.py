@@ -4,7 +4,9 @@ Flask web application for YouTube Audio Extractor
 Provides a REST API for the web UI
 """
 
-from flask import Flask
+import os
+from pathlib import Path
+from flask import Flask, send_from_directory, send_file
 from flask_cors import CORS
 
 # Import all blueprint modules
@@ -27,8 +29,30 @@ app.register_blueprint(downloads_bp)
 app.register_blueprint(progress_bp)
 app.register_blueprint(utils_bp)
 
-# Frontend is served by Webpack dev server in development
-# No need to serve or redirect from Flask
+# Serve static files from the built frontend
+@app.route('/')
+def serve_index():
+    """Serve the main index.html file"""
+    dist_dir = Path('web/dist')
+    if dist_dir.exists():
+        return send_file(dist_dir / 'index.html')
+    else:
+        return """
+        <h1>YouTube Audio Extractor</h1>
+        <p>Frontend not built yet. Please run:</p>
+        <pre>cd web && npm run build</pre>
+        <p>Or use development mode with: <code>./start_ui.sh</code></p>
+        """, 200
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    """Serve static files from the dist directory"""
+    dist_dir = Path('web/dist')
+    if dist_dir.exists():
+        return send_from_directory(str(dist_dir), filename)
+    else:
+        # Fallback to index.html for client-side routing
+        return serve_index()
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)  # Disable auto-reload temporarily for debugging
