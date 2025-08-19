@@ -156,6 +156,141 @@ def download_playlist(url, output_dir="downloads", quality="best", bitrate="192"
     return successful_downloads > 0
 
 
+def download_playlist_with_progress(url, output_dir="downloads", quality="best", bitrate="192",
+                                  split_large_files=False, split_by_chapters=False,
+                                  start_index=1, end_index=None, progress_hook=None, download_id=None):
+    """Download entire YouTube playlist, channel, or search results with progress tracking."""
+    if not validate_playlist_url(url):
+        if progress_hook:
+            progress_hook({'status': 'error', 'message': 'Invalid YouTube URL provided!'})
+        else:
+            click.echo("❌ Invalid YouTube URL provided!")
+        return False
+
+    # Get playlist information
+    playlist_title, entries = get_playlist_info(url)
+    if not playlist_title or not entries:
+        return False
+
+    # Ensure output directory is always within the downloads folder
+    if output_dir == "downloads":
+        final_output_dir = "downloads"
+    else:
+        # Create a clean subfolder name and place it in downloads/
+        clean_dir_name = clean_directory_name(output_dir)
+        final_output_dir = Path("downloads") / clean_dir_name
+
+    # Create playlist output directory within the downloads folder
+    playlist_dir = Path(final_output_dir) / clean_filename(playlist_title)
+    playlist_dir.mkdir(parents=True, exist_ok=True)
+
+    if progress_hook:
+        progress_hook({'status': 'info', 'message': f'Output directory: {playlist_dir}'})
+        progress_hook({'status': 'info', 'message': f'Audio quality: {bitrate} kbps'})
+    else:
+        click.echo(f"📁 Output directory: {playlist_dir}")
+        click.echo(f"🎚️  Audio quality: {bitrate} kbps")
+
+    if split_large_files:
+        if progress_hook:
+            progress_hook({'status': 'info', 'message': 'Large file splitting: Enabled (max 16MB per chunk)'})
+        else:
+            click.echo(f"✂️  Large file splitting: Enabled (max 16MB per chunk)")
+
+    if split_by_chapters:
+        if progress_hook:
+            progress_hook({'status': 'info', 'message': 'Chapter-based splitting: Enabled'})
+        else:
+            click.echo(f"📚  Chapter-based splitting: Enabled")
+
+    # Determine range of videos to download
+    total_videos = len(entries)
+    start_idx = max(1, start_index) - 1  # Convert to 0-based index
+    end_idx = min(total_videos, end_index) if end_index else total_videos
+
+    videos_to_download = entries[start_idx:end_idx]
+
+    if progress_hook:
+        progress_hook({'status': 'info', 'message': f'Downloading videos {start_idx + 1} to {end_idx} of {total_videos}'})
+    else:
+        click.echo(f"🎯 Downloading videos {start_idx + 1} to {end_idx} of {total_videos}")
+
+    # Download each video in the playlist
+    successful_downloads = 0
+    failed_downloads = 0
+
+    for i, entry in enumerate(videos_to_download, start=start_idx + 1):
+        video_url = entry.get('url')
+        video_title = entry.get('title', f'Video {i}')
+
+        if not video_url:
+            if progress_hook:
+                progress_hook({'status': 'warning', 'message': f'Skipping video {i}: No URL available'})
+            else:
+                click.echo(f"❌ Skipping video {i}: No URL available")
+            failed_downloads += 1
+            continue
+
+        if progress_hook:
+            progress_hook({
+                'status': 'downloading_video',
+                'message': f'[{i}/{end_idx}] Downloading: {video_title}',
+                'current_video': i,
+                'total_videos': end_idx,
+                'video_title': video_title
+            })
+        else:
+            click.echo(f"\n🎵 [{i}/{end_idx}] Downloading: {video_title}")
+
+        # Create video-specific output directory
+        video_dir = playlist_dir / f"{i:02d}_{clean_filename(video_title)}"
+        video_dir.mkdir(exist_ok=True)
+
+        # Download the video
+        if download_playlist_video_with_progress(video_url, str(video_dir), quality, bitrate,
+                                               split_large_files, split_by_chapters, progress_hook):
+            successful_downloads += 1
+            if progress_hook:
+                progress_hook({
+                    'status': 'video_completed',
+                    'message': f'[{i}/{end_idx}] Successfully downloaded: {video_title}',
+                    'current_video': i,
+                    'total_videos': end_idx,
+                    'successful_downloads': successful_downloads
+                })
+            else:
+                click.echo(f"✅ [{i}/{end_idx}] Successfully downloaded: {video_title}")
+        else:
+            failed_downloads += 1
+            if progress_hook:
+                progress_hook({
+                    'status': 'video_failed',
+                    'message': f'[{i}/{end_idx}] Failed to download: {video_title}',
+                    'current_video': i,
+                    'total_videos': end_idx,
+                    'failed_downloads': failed_downloads
+                })
+            else:
+                click.echo(f"❌ [{i}/{end_idx}] Failed to download: {video_title}")
+
+    # Summary
+    if progress_hook:
+        progress_hook({
+            'status': 'playlist_completed',
+            'message': f'Playlist download completed! Successful: {successful_downloads}, Failed: {failed_downloads}',
+            'successful_downloads': successful_downloads,
+            'failed_downloads': failed_downloads,
+            'output_dir': str(playlist_dir)
+        })
+    else:
+        click.echo(f"\n🎯 Download completed!")
+        click.echo(f"✅ Successful: {successful_downloads}")
+        click.echo(f"❌ Failed: {failed_downloads}")
+        click.echo(f"📁 All files saved to: {playlist_dir}")
+
+    return successful_downloads > 0
+
+
 def download_playlist_video(url, output_dir, quality, bitrate, split_large_files, split_by_chapters):
     """Download a single video from a playlist."""
     try:
@@ -207,6 +342,80 @@ def download_playlist_video(url, output_dir, quality, bitrate, split_large_files
 
     except Exception as e:
         click.echo(f"❌ Error downloading video: {e}")
+        return False
+
+
+def download_playlist_video_with_progress(url, output_dir, quality, bitrate, split_large_files, split_by_chapters, progress_hook=None):
+    """Download a single video from a playlist with progress tracking."""
+    try:
+        # Configure yt-dlp options for this video
+        ydl_opts = {
+            'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
+            'format': f'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if quality == "best" else quality,
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': bitrate,
+            }],
+            'quiet': True,  # Less verbose for playlist downloads
+            'no_warnings': True,
+        }
+
+        # Add progress hook if provided
+        if progress_hook:
+            ydl_opts['progress_hooks'] = [progress_hook]
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+
+        # Find the downloaded MP3 file
+        mp3_files = list(Path(output_dir).glob("*.mp3"))
+        if not mp3_files:
+            return False
+
+        downloaded_file = mp3_files[-1]  # Get the most recent MP3 file
+        file_size_mb = downloaded_file.stat().st_size / (1024 * 1024)
+
+        # Handle chapter-based splitting first (if requested)
+        if split_by_chapters:
+            chapters, _ = get_video_chapters(url)
+            if chapters:
+                if split_audio_by_chapters(str(downloaded_file), output_dir, chapters, bitrate):
+                    # Remove original file after successful chapter splitting
+                    downloaded_file.unlink()
+                    if progress_hook:
+                        progress_hook({'status': 'info', 'message': 'Chapter splitting completed for video'})
+                else:
+                    if progress_hook:
+                        progress_hook({'status': 'warning', 'message': 'Chapter splitting failed for video'})
+                    else:
+                        click.echo(f"⚠️  Chapter splitting failed for video")
+            else:
+                if progress_hook:
+                    progress_hook({'status': 'info', 'message': 'No chapters found, keeping original file'})
+                else:
+                    click.echo(f"ℹ️  No chapters found, keeping original file")
+
+        # Handle size-based splitting (if requested and not already handled by chapters)
+        elif split_large_files and file_size_mb > 16:
+            if split_audio_file(str(downloaded_file), output_dir, 16, bitrate):
+                # Remove original file after successful splitting
+                downloaded_file.unlink()
+                if progress_hook:
+                    progress_hook({'status': 'info', 'message': 'File splitting completed for video'})
+            else:
+                if progress_hook:
+                    progress_hook({'status': 'warning', 'message': 'File splitting failed for video'})
+                else:
+                    click.echo(f"⚠️  File splitting failed for video")
+
+        return True
+
+    except Exception as e:
+        if progress_hook:
+            progress_hook({'status': 'error', 'message': f'Error downloading video: {e}'})
+        else:
+            click.echo(f"❌ Error downloading video: {e}")
         return False
 
 

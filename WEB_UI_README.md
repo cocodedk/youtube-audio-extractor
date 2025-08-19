@@ -1,390 +1,155 @@
-# 🎵 YouTube Audio Extractor - Web UI
+# Web UI for YouTube Audio Extractor
 
-A beautiful, modern web interface for the YouTube Audio Extractor, built with **TypeScript**, **Tailwind CSS**, and **Webpack**. This provides a user-friendly alternative to the command-line interface.
+A modern, responsive web interface for the YouTube Audio Extractor tool.
 
-## ✨ Features
+## Features
 
-- **🎨 Modern UI**: Clean, responsive design with Tailwind CSS
-- **📱 Mobile First**: Works perfectly on all device sizes
-- **⚡ Real-time Updates**: Live status messages and progress tracking
-- **🔧 TypeScript**: Full type safety and modern JavaScript features
-- **📦 Component-based**: Modular architecture for easy maintenance
-- **🚀 Hot Reloading**: Instant updates during development
+- **Modern UI**: Built with TypeScript, Tailwind CSS, and modern web technologies
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Real-time Progress Tracking**: Monitor download progress with live progress bars
+- **Playlist Support**: Download entire playlists with range selection
+- **Audio Quality Options**: Choose from 32 kbps to 320 kbps bitrates
+- **File Splitting**: Automatic splitting of large files and chapter-based splitting
+- **Dark Theme**: Easy on the eyes with a modern dark color scheme
 
-## 🚀 Quick Start
+## Progress Bar Features
 
-### Option 1: Production Mode (Recommended for users)
+The web UI now includes a comprehensive progress tracking system that provides real-time updates during downloads:
 
-```bash
-# Install Python dependencies
-pip install -r requirements.txt
+### Single Video Downloads
+- **Overall Progress**: Shows download percentage and downloaded/total bytes
+- **Current Step**: Displays the current operation (downloading, processing, splitting, etc.)
+- **Speed & ETA**: Real-time download speed and estimated time remaining
+- **Status Updates**: Live status messages throughout the process
 
-# Start the web application
-python start_web_app.py
-```
+### Playlist Downloads
+- **Video Progress**: Tracks progress through individual videos in the playlist
+- **Overall Progress**: Shows completion percentage for the entire playlist
+- **Current Video**: Displays which video is currently being downloaded
+- **Success/Failure Count**: Tracks successful and failed downloads
 
-Then open your browser to: **http://localhost:5000**
+### Progress Bar Components
+- **Main Progress Bar**: Visual representation of overall download progress
+- **Step Indicator**: Shows current operation with spinning icon
+- **Speed Information**: Real-time download speed and ETA
+- **Status Messages**: Live updates on what's happening
 
-### Option 2: Development Mode (For developers)
+## Installation
 
-```bash
-# Install Python dependencies
-pip install -r requirements.txt
+1. **Install Dependencies**:
+   ```bash
+   cd web
+   npm install
+   ```
 
-# Start development servers (both Flask + Webpack)
-python dev_server.py
-```
+2. **Build the Project**:
+   ```bash
+   npm run build
+   ```
 
-Then open your browser to: **http://localhost:3000**
+3. **Development Mode**:
+   ```bash
+   npm run dev
+   ```
 
-## 📋 Prerequisites
+## Usage
 
-### Required Software
+1. **Start the Backend**: Ensure the Flask backend is running on `http://localhost:5000`
+2. **Open the Web UI**: Navigate to the web interface in your browser
+3. **Enter YouTube URL**: Paste a YouTube video or playlist URL
+4. **Configure Options**: Set audio quality, splitting options, and output directory
+5. **Monitor Progress**: Watch the real-time progress bar during downloads
+6. **View Results**: Check the downloads tab for completed files
 
-- **Python 3.7+** with pip
-- **Node.js 16+** and npm
-- **FFmpeg** (for audio processing)
+## API Endpoints
 
-### Install FFmpeg
+The web UI communicates with the Flask backend through these endpoints:
 
-**Ubuntu/Debian:**
-```bash
-sudo apt update && sudo apt install ffmpeg
-```
+- `POST /api/download` - Download single video with progress tracking
+- `POST /api/playlist` - Download playlist with progress tracking
+- `GET /api/progress/<download_id>` - Real-time progress updates (Server-Sent Events)
+- `GET /api/downloads/status` - Get status of all active downloads
+- `GET /api/downloads` - List completed downloads
+- `GET /api/chapters/<url>` - Get video chapters
+- `GET /api/formats/<url>` - Get available formats
 
-**macOS:**
-```bash
-brew install ffmpeg
-```
+## Progress Tracking Architecture
 
-**Windows:**
-Download from [FFmpeg official website](https://ffmpeg.org/download.html)
+The progress tracking system uses Server-Sent Events (SSE) for real-time communication:
 
-## 🛠️ Installation
+1. **Download Initiation**: User starts download, backend generates unique download ID
+2. **Progress Hooks**: Custom progress hooks capture yt-dlp progress events
+3. **Real-time Updates**: Progress data sent to frontend via SSE
+4. **UI Updates**: Frontend updates progress bars and status in real-time
+5. **Completion Handling**: Automatic cleanup and final status display
 
-### 1. Install Python Dependencies
-
-```bash
-# Create virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate  # Linux/macOS
-# or
-venv\Scripts\activate     # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### 2. Install Frontend Dependencies
-
-```bash
-cd web
-npm install
-cd ..
-```
-
-## 🎯 Usage
-
-### Starting the Application
-
-#### Production Mode
-```bash
-python start_web_app.py
-```
-
-This will:
-- ✅ Check all dependencies
-- 📦 Install frontend packages if needed
-- 🔨 Build the frontend for production
-- 🚀 Start Flask server on port 5000
-
-#### Development Mode
-```bash
-python dev_server.py
-```
-
-This will:
-- ✅ Check all dependencies
-- 📦 Install frontend packages if needed
-- 🌐 Start Webpack dev server on port 3000
-- 🚀 Start Flask server on port 5000
-- 🔄 Enable hot reloading for development
-
-### Accessing the Application
-
-- **Production**: http://localhost:5000
-- **Development**: http://localhost:3000
-- **API Endpoints**: http://localhost:5000/api/
-
-## 🎨 Web Interface Features
-
-### Main Dashboard
-- **Download Tab**: Single video downloads with advanced options
-- **Playlist Tab**: Download entire playlists
-- **Downloads Tab**: View and manage downloaded files
-
-### Download Options
-- **Audio Quality**: Choose from 8 bitrate options (32-320 kbps)
-- **Output Directory**: Customize where files are saved
-- **File Splitting**:
-  - Split large files (>16MB) into chunks
-  - Split by video chapters (perfect for albums!)
-- **Smart Validation**: Prevents using conflicting options
-
-### Real-time Feedback
-- **Status Messages**: Clear feedback for all operations
-- **Progress Indicators**: Visual feedback during downloads
-- **Error Handling**: Graceful error messages and recovery
-
-## 🏗️ Architecture
-
-### Backend (Flask)
-```
-web_app.py              # Main Flask application
-├── /api/download       # Single video downloads
-├── /api/playlist       # Playlist downloads
-├── /api/chapters       # Video chapter information
-├── /api/formats        # Available audio formats
-├── /api/downloads      # List downloaded files
-└── /api/bitrates       # Available quality options
-```
-
-### Frontend (TypeScript + Webpack)
-```
-web/src/
-├── components/         # UI components
-│   ├── header.ts      # Application header
-│   ├── tab-manager.ts # Tab navigation
-│   ├── download-form.ts # Download form
-│   └── downloads-list.ts # Downloads display
-├── services/          # API services
-│   └── api-service.ts # HTTP client
-├── app.ts            # Main application
-├── index.ts          # Entry point
-└── styles.css        # Global styles
-```
-
-### Build System
-- **Webpack 5**: Module bundling and development server
-- **TypeScript**: Type-safe JavaScript compilation
-- **Tailwind CSS**: Utility-first CSS framework
-- **PostCSS**: CSS processing and optimization
-
-## 🔧 Development
+## Development
 
 ### Project Structure
 ```
-youtube-audio-extractor/
-├── web_app.py              # Flask web application
-├── start_web_app.py        # Production startup script
-├── dev_server.py           # Development startup script
-├── requirements.txt         # Python dependencies
-├── web/                    # Frontend source code
-│   ├── src/               # TypeScript source
-│   ├── package.json       # Node.js dependencies
-│   ├── webpack.config.js  # Webpack configuration
-│   ├── tsconfig.json      # TypeScript configuration
-│   └── tailwind.config.js # Tailwind configuration
-└── downloads/              # Downloaded audio files
+web/
+├── src/
+│   ├── components/          # React-like components
+│   │   ├── download-form.ts # Main download form with progress bar
+│   │   ├── downloads-list.ts
+│   │   └── ...
+│   ├── services/            # API communication
+│   │   └── api-service.ts   # HTTP client for backend
+│   ├── styles.css           # Tailwind CSS styles
+│   └── index.ts             # Main entry point
+├── package.json
+└── webpack.config.js
 ```
 
-### Development Workflow
+### Key Components
 
-1. **Start development servers:**
-   ```bash
-   python dev_server.py
-   ```
+#### DownloadForm
+- Handles form submission and validation
+- Manages progress bar display and updates
+- Establishes SSE connection for real-time progress
+- Updates UI elements based on progress data
 
-2. **Make changes to TypeScript files** in `web/src/`
-   - Files automatically recompile
-   - Browser automatically refreshes
+#### Progress Bar
+- **Overall Progress**: Main download progress with percentage
+- **Step Indicator**: Current operation with animated icon
+- **Playlist Progress**: Video-by-video progress for playlists
+- **Speed Info**: Download speed and ETA display
 
-3. **Make changes to Python files** in project root
-   - Flask server automatically restarts
+### Adding New Progress Features
 
-4. **Access development environment:**
-   - Frontend: http://localhost:3000
-   - Backend: http://localhost:5000
+To extend the progress tracking:
 
-### Building for Production
+1. **Backend**: Add new progress hook calls in core functions
+2. **Frontend**: Update progress bar component to handle new data
+3. **API**: Ensure new progress data is sent via SSE
 
-```bash
-# Build frontend
-cd web
-npm run build
-cd ..
+## Troubleshooting
 
-# Start production server
-python start_web_app.py
-```
+### Progress Bar Not Showing
+- Check browser console for JavaScript errors
+- Verify backend is running and accessible
+- Check SSE connection in Network tab
 
-## 🌐 API Endpoints
+### Progress Updates Not Working
+- Ensure download ID is properly generated
+- Check progress hook integration in core functions
+- Verify SSE endpoint is working
 
-### Health Check
-```http
-GET /api/health
-```
+### Build Errors
+- Run `npm install` to ensure all dependencies
+- Check TypeScript compilation with `npm run build`
+- Verify webpack configuration
 
-### Download Audio
-```http
-POST /api/download
-Content-Type: application/json
+## Browser Support
 
-{
-  "url": "https://youtube.com/watch?v=...",
-  "output_dir": "music",
-  "bitrate": "192",
-  "split_large_files": false,
-  "split_by_chapters": true
-}
-```
+- **Chrome/Edge**: Full support for all features
+- **Firefox**: Full support for all features
+- **Safari**: Full support for all features
+- **Mobile Browsers**: Responsive design with touch-friendly controls
 
-### Download Playlist
-```http
-POST /api/playlist
-Content-Type: application/json
+## Performance
 
-{
-  "url": "https://youtube.com/playlist?list=...",
-  "output_dir": "playlists",
-  "bitrate": "320",
-  "start_index": 1,
-  "end_index": 10
-}
-```
-
-### Get Video Chapters
-```http
-GET /api/chapters/{encoded_url}
-```
-
-### List Downloads
-```http
-GET /api/downloads
-```
-
-### Get Available Bitrates
-```http
-GET /api/bitrates
-```
-
-## 🎨 Customization
-
-### Styling
-- **Tailwind CSS**: Modify `web/tailwind.config.js`
-- **Custom Components**: Edit `web/src/styles.css`
-- **Theme Colors**: Update color palette in Tailwind config
-
-### Components
-- **New Components**: Add to `web/src/components/`
-- **Component Styling**: Use Tailwind classes or custom CSS
-- **Event Handling**: Follow existing patterns for consistency
-
-### API Integration
-- **New Endpoints**: Add to `web_app.py`
-- **API Service**: Update `web/src/services/api-service.ts`
-- **Error Handling**: Use consistent error response format
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-#### "Module not found" errors
-```bash
-# Reinstall frontend dependencies
-cd web
-rm -rf node_modules package-lock.json
-npm install
-cd ..
-```
-
-#### Port conflicts
-```bash
-# Check what's using the ports
-lsof -i :3000  # Check port 3000
-lsof -i :5000  # Check port 5000
-
-# Kill processes if needed
-kill -9 <PID>
-```
-
-#### Build errors
-```bash
-# Clean and rebuild
-cd web
-npm run clean
-npm run build
-cd ..
-```
-
-#### Flask import errors
-```bash
-# Ensure you're in the right directory
-# and virtual environment is activated
-pip install -r requirements.txt
-```
-
-### Debug Mode
-
-Enable debug logging:
-```bash
-# Set environment variable
-export FLASK_DEBUG=1
-
-# Or modify web_app.py
-app.run(debug=True, ...)
-```
-
-### Logs
-
-- **Flask logs**: Check terminal output
-- **Webpack logs**: Check terminal output
-- **Browser logs**: Open Developer Tools → Console
-
-## 🔒 Security Notes
-
-- **No Authentication**: This is a local development tool
-- **Local Access Only**: Server binds to localhost by default
-- **File System Access**: Application can read/write to downloads directory
-- **YouTube Compliance**: Users must follow YouTube's Terms of Service
-
-## 📱 Browser Support
-
-- **Chrome**: 90+
-- **Firefox**: 88+
-- **Safari**: 14+
-- **Edge**: 90+
-
-## 🤝 Contributing
-
-1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Test thoroughly**
-5. **Submit a pull request**
-
-### Development Guidelines
-
-- **TypeScript**: Use strict mode and proper typing
-- **Components**: Keep components focused and reusable
-- **Styling**: Use Tailwind CSS utilities when possible
-- **Error Handling**: Provide clear user feedback
-- **Accessibility**: Include ARIA labels and keyboard navigation
-
-## 📄 License
-
-This project is licensed under the **MIT License with Attribution Requirements**. See the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For issues and questions:
-1. Check the troubleshooting section above
-2. Review the browser console for errors
-3. Check the terminal output for backend errors
-4. Open an issue on GitHub with detailed information
-
----
-
-**Happy downloading! 🎵**
-
-The web UI makes it easy to extract audio from YouTube videos and playlists with a beautiful, intuitive interface. No more command-line complexity - just point, click, and download!
+- **Lazy Loading**: Components load only when needed
+- **Efficient Updates**: Minimal DOM manipulation during progress updates
+- **Memory Management**: Automatic cleanup of completed downloads
+- **Optimized Builds**: Production builds with tree shaking and minification

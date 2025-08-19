@@ -46,6 +46,17 @@ export class ApiService {
     return response.json();
   }
 
+  async getDownloadsStatus(): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/downloads/status`);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to fetch downloads status');
+    }
+
+    return response.json();
+  }
+
   async getChapters(url: string): Promise<any> {
     const encodedUrl = encodeURIComponent(url);
     const response = await fetch(`${this.baseUrl}/chapters/${encodedUrl}`);
