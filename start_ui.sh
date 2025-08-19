@@ -69,15 +69,47 @@ start_development() {
 
     # Check if ports are available
     if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
-        echo -e "${RED}❌ Port 3000 is already in use${NC}"
-        echo "Please stop any existing servers first"
-        return 1
+        echo -e "${YELLOW}⚠️  Port 3000 is already in use${NC}"
+        echo "Attempting to stop existing processes on port 3000..."
+
+        # Kill processes on port 3000
+        PIDS=$(lsof -Pi :3000 -sTCP:LISTEN -t 2>/dev/null || true)
+        if [[ -n "$PIDS" ]]; then
+            echo "Stopping processes: $PIDS"
+            kill $PIDS 2>/dev/null || true
+            sleep 2
+
+            # Check if still running
+            if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+                echo -e "${RED}❌ Failed to stop processes on port 3000${NC}"
+                echo "Please manually stop them and try again"
+                return 1
+            else
+                echo -e "${GREEN}✅ Port 3000 is now available${NC}"
+            fi
+        fi
     fi
 
     if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null 2>&1; then
-        echo -e "${RED}❌ Port 5000 is already in use${NC}"
-        echo "Please stop any existing servers first"
-        return 1
+        echo -e "${YELLOW}⚠️  Port 5000 is already in use${NC}"
+        echo "Attempting to stop existing processes on port 5000..."
+
+        # Kill processes on port 5000
+        PIDS=$(lsof -Pi :5000 -sTCP:LISTEN -t 2>/dev/null || true)
+        if [[ -n "$PIDS" ]]; then
+            echo "Stopping processes: $PIDS"
+            kill $PIDS 2>/dev/null || true
+            sleep 2
+
+            # Check if still running
+            if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+                echo -e "${RED}❌ Failed to stop processes on port 5000${NC}"
+                echo "Please manually stop them and try again"
+                return 1
+            else
+                echo -e "${GREEN}✅ Port 5000 is now available${NC}"
+            fi
+        fi
     fi
 
     # Activate virtual environment and start development servers

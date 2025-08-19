@@ -140,7 +140,7 @@ def start_flask_server():
         print("⏹️  Press Ctrl+C to stop both servers")
         print()
 
-        app.run(debug=True, host='0.0.0.0', port=5000)
+        app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
 
     except Exception as e:
         print(f"❌ Failed to start Flask server: {e}")
