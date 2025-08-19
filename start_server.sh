@@ -132,7 +132,7 @@ start_server() {
     print_status "Press Ctrl+C to stop the server"
     echo
 
-    python start_web_app.py
+    python3 start_web_app.py
 }
 
 # Function to check system requirements

@@ -80,7 +80,8 @@ start_development() {
         return 1
     fi
 
-    # Start development servers
+    # Activate virtual environment and start development servers
+    source venv/bin/activate
     python3 dev_server.py
 }
 
@@ -101,8 +102,9 @@ start_production() {
     npm run build
     cd ..
 
-    # Start production server
+    # Activate virtual environment and start production server
     echo -e "${BLUE}🚀 Starting production server...${NC}"
+    source venv/bin/activate
     python3 start_web_app.py
 }
 
