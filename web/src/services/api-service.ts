@@ -47,13 +47,12 @@ export class ApiService {
   }
 
   async getDownloadsStatus(): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/downloads/status`);
+    const response = await fetch('/api/downloads/status');
+    return response.json();
+  }
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to fetch downloads status');
-    }
-
+  async getDownloadLocation(downloadId: string): Promise<any> {
+    const response = await fetch(`/api/downloads/${downloadId}/location`);
     return response.json();
   }
 
