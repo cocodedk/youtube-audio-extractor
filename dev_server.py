@@ -140,6 +140,11 @@ def start_flask_server():
         print("⏹️  Press Ctrl+C to stop both servers")
         print()
 
+        # Suppress Flask's development server warning
+        import logging
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
+
         app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
 
     except Exception as e:

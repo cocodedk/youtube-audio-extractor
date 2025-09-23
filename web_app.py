@@ -55,4 +55,9 @@ def serve_static(filename):
         return serve_index()
 
 if __name__ == '__main__':
+    # Suppress Flask's development server warning
+    import logging
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
+
     app.run(debug=False, host='0.0.0.0', port=5000)  # Disable auto-reload temporarily for debugging
