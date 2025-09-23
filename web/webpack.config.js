@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -36,6 +37,22 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: 'index.html',
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'src/*.ico',
+            to: '[name][ext]',
+          },
+          {
+            from: 'src/*.png',
+            to: '[name][ext]',
+          },
+          {
+            from: 'src/site.webmanifest',
+            to: 'site.webmanifest',
+          },
+        ],
       }),
       ...(isProduction ? [new MiniCssExtractPlugin({
         filename: '[name].[contenthash].css',
