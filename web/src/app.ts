@@ -3,6 +3,7 @@ import { DownloadsList } from './components/downloads-list';
 import { TabManager } from './components/tab-manager';
 import { Header } from './components/header';
 import { About } from './components/about';
+import { Footer } from './components/footer';
 
 export class App {
   private container: HTMLElement;
@@ -11,6 +12,7 @@ export class App {
   private downloadForm!: DownloadForm;
   private downloadsList!: DownloadsList;
   private about!: About;
+  private footer!: Footer;
   private mainContainer!: HTMLElement;
 
   constructor(container: HTMLElement) {
@@ -25,7 +27,7 @@ export class App {
 
     // Create main container
     this.mainContainer = document.createElement('main');
-    this.mainContainer.className = 'container mx-auto px-4 py-8 max-w-6xl';
+    this.mainContainer.className = 'container mx-auto px-4 py-8 max-w-6xl flex-1';
 
     // Create tab manager
     this.tabManager = new TabManager();
@@ -43,8 +45,14 @@ export class App {
     this.about = new About();
     this.mainContainer.appendChild(this.about.element);
 
+    // Create footer
+    this.footer = new Footer();
+
     // Add main container to page
     this.container.appendChild(this.mainContainer);
+
+    // Add footer to page
+    this.container.appendChild(this.footer.element);
 
     // Setup event listeners
     this.setupEventListeners();
