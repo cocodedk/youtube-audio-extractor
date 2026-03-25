@@ -45,6 +45,18 @@ check_dependencies() {
     # Activate virtual environment
     source venv/bin/activate
 
+    # Detect stale venv (created by a different user — hardcoded paths won't match)
+    VENV_PYTHON=$(python3 -c "import sys; print(sys.prefix)" 2>/dev/null || echo "")
+    EXPECTED_PREFIX="$(pwd)/venv"
+    if [[ "$VENV_PYTHON" != "$EXPECTED_PREFIX" ]]; then
+        echo -e "${YELLOW}⚠️  Virtual environment has stale paths (was it created by another user?). Recreating...${NC}"
+        deactivate 2>/dev/null || true
+        rm -rf venv
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+    fi
+
     # Check yt-dlp version
     if command -v pip &> /dev/null; then
         YTDLP_VERSION=$(pip show yt-dlp 2>/dev/null | grep Version | cut -d' ' -f2 || echo "not_installed")
