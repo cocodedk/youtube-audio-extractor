@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Audio Extractor — Extract Audio from YouTube Videos &amp; Playlists</title>
+  <meta name="description" content="YouTube Audio Extractor is a free, open-source Python tool to extract audio from YouTube videos and playlists. Supports bitrate control, chapter splitting, and a beautiful web UI." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cocodedk.github.io/youtube-audio-extractor/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="YouTube Audio Extractor" />
+  <meta property="og:title" content="YouTube Audio Extractor — Extract Audio from YouTube" />
+  <meta property="og:description" content="Free, open-source Python tool to extract audio from YouTube videos and playlists. Web UI + CLI. Bitrate control, chapter splitting." />
+  <meta property="og:url" content="https://cocodedk.github.io/youtube-audio-extractor/" />
+  <meta property="og:image" content="https://cocodedk.github.io/youtube-audio-extractor/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="YouTube Audio Extractor — dark themed UI showing audio extraction" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="YouTube Audio Extractor — Extract Audio from YouTube" />
+  <meta name="twitter:description" content="Free, open-source Python tool to extract audio from YouTube videos and playlists." />
+  <meta name="twitter:image" content="https://cocodedk.github.io/youtube-audio-extractor/og.png" />
+  <meta name="twitter:image:alt" content="YouTube Audio Extractor dark UI" />
+
+  <!-- Hreflang -->
+  <link rel="alternate" hreflang="en" href="https://cocodedk.github.io/youtube-audio-extractor/" />
+  <link rel="alternate" hreflang="fa" href="https://cocodedk.github.io/youtube-audio-extractor/fa/" />
+  <link rel="alternate" hreflang="x-default" href="https://cocodedk.github.io/youtube-audio-extractor/" />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "YouTube Audio Extractor",
+    "description": "A free, open-source Python tool to extract audio from YouTube videos and playlists with bitrate control, chapter splitting, and a web UI.",
+    "url": "https://cocodedk.github.io/youtube-audio-extractor/",
+    "downloadUrl": "https://github.com/cocodedk/youtube-audio-extractor/releases/latest/download/youtube-audio-extractor.zip",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Linux, macOS, Windows",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": {
+      "@type": "Person",
+      "name": "Babak Bandpey",
+      "url": "https://cocode.dk",
+      "sameAs": ["https://linkedin.com/in/babakbandpey", "https://github.com/cocodedk"]
+    },
+    "codeRepository": "https://github.com/cocodedk/youtube-audio-extractor"
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <span class="logo">🎵 YouTube Audio Extractor</span>
+    <nav>
+      <a href="https://github.com/cocodedk/youtube-audio-extractor" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="fa/" class="lang-switch">فارسی</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>YouTube Audio Extractor</h1>
+    <p>Extract audio from YouTube videos and playlists — free, open-source, and easy to use. Comes with a beautiful web UI and a powerful CLI.</p>
+    <a href="https://github.com/cocodedk/youtube-audio-extractor/releases/latest/download/youtube-audio-extractor.zip" class="btn">Download Latest</a>
+  </div>
+
+  <main>
+    <section>
+      <h2>Features</h2>
+      <ul>
+        <li><strong>Web UI</strong> — Beautiful Flask-based interface, no terminal needed</li>
+        <li><strong>CLI</strong> — Full-featured command-line tool for advanced users</li>
+        <li><strong>Bitrate control</strong> — Choose your audio quality</li>
+        <li><strong>Chapter splitting</strong> — Automatically split audio by YouTube chapters</li>
+        <li><strong>Playlist support</strong> — Extract entire playlists in one command</li>
+        <li><strong>Cross-platform</strong> — Works on Linux, macOS, and Windows</li>
+      </ul>
+    </section>
+
+    <section class="steps">
+      <h2>Quick Start</h2>
+      <ol>
+        <li>
+          <div>
+            <strong>Install dependencies</strong>
+            <pre><code>pip install -r requirements.txt</code></pre>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Start the web UI</strong>
+            <pre><code>./start_ui.sh</code></pre>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Open your browser</strong> at <code>http://localhost:5000</code>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Paste a YouTube URL</strong> and click Download!
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Architecture</h2>
+      <table class="tech-table">
+        <tr><th>Component</th><th>Technology</th></tr>
+        <tr><td>Web UI</td><td>Flask 3.0 + vanilla JS</td></tr>
+        <tr><td>CLI</td><td>Click 8</td></tr>
+        <tr><td>Audio extraction</td><td>yt-dlp</td></tr>
+        <tr><td>Language</td><td>Python 3.12</td></tr>
+        <tr><td>License</td><td>Apache-2.0</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Author</h2>
+      <p><strong>Babak Bandpey</strong> — <a href="https://cocode.dk" target="_blank" rel="noreferrer">cocode.dk</a> | <a href="https://linkedin.com/in/babakbandpey" target="_blank" rel="noreferrer">LinkedIn</a> | <a href="https://github.com/cocodedk" target="_blank" rel="noreferrer">GitHub</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Apache-2.0 &nbsp;|&nbsp; © 2026 <a href="https://cocode.dk" target="_blank" rel="noreferrer">Cocode</a> &nbsp;|&nbsp; Created by <a href="https://linkedin.com/in/babakbandpey" target="_blank" rel="noreferrer">Babak Bandpey</a></p>
+  </footer>
+</body>
+</html>
