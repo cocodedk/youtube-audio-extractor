@@ -51,7 +51,7 @@ def download_video():
 
         # Generate unique download ID and initialize
         download_id = generate_download_id()
-        main_logger.info(f"=== NEW SINGLE VIDEO DOWNLOAD ===")
+        main_logger.info("=== NEW SINGLE VIDEO DOWNLOAD ===")
         main_logger.info(f"Download ID: {download_id}")
         main_logger.info(f"URL: {url}")
         main_logger.info(f"Output dir: {output_dir}")
@@ -61,11 +61,9 @@ def download_video():
 
         initialize_download(download_id, url, output_dir, 'single')
 
-                # Start download in background thread
-        logger = get_download_logger(download_id)
-
+        # Start download in background thread
         def download_task():
-            logger = get_download_logger(download_id)
+            get_download_logger(download_id)
             try:
                 # Create custom progress hook for this download
                 custom_progress_hook = create_progress_hook(download_id)
@@ -149,7 +147,7 @@ def download_playlist_endpoint():
 
         # Generate unique download ID and initialize
         download_id = generate_download_id()
-        main_logger.info(f"=== NEW PLAYLIST DOWNLOAD ===")
+        main_logger.info("=== NEW PLAYLIST DOWNLOAD ===")
         main_logger.info(f"Download ID: {download_id}")
         main_logger.info(f"URL: {url}")
         main_logger.info(f"Start index: {start_index}, End index: {end_index}")
@@ -158,7 +156,7 @@ def download_playlist_endpoint():
 
         # Start download in background thread
         def download_task():
-            logger = get_download_logger(download_id)
+            get_download_logger(download_id)
             try:
 
                 # Update progress

@@ -8,7 +8,6 @@ import os
 import subprocess
 import sys
 import time
-import threading
 from pathlib import Path
 
 def check_dependencies():
@@ -17,8 +16,8 @@ def check_dependencies():
 
     # Check Python dependencies
     try:
-        import flask
-        import flask_cors
+        import flask  # noqa: F401
+        import flask_cors  # noqa: F401
         print("✅ Python dependencies OK")
     except ImportError as e:
         print(f"❌ Missing Python dependency: {e}")

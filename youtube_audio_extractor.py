@@ -5,7 +5,6 @@ A command-line tool to extract audio from YouTube videos.
 """
 
 import os
-import sys
 import click
 import yt_dlp
 from pathlib import Path
@@ -130,7 +129,7 @@ def download_audio(url, output_dir="downloads", format_id=None, quality="best", 
     # Configure yt-dlp options
     ydl_opts = {
         'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
-        'format': f'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if format_id is None else format_id,
+        'format': 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if format_id is None else format_id,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -146,7 +145,7 @@ def download_audio(url, output_dir="downloads", format_id=None, quality="best", 
         click.echo(f"📁 Output directory: {output_dir}")
         click.echo(f"🎚️  Audio quality: {bitrate} kbps")
         if split_large_files:
-            click.echo(f"✂️  Large file splitting: Enabled (max 16MB per chunk)")
+            click.echo("✂️  Large file splitting: Enabled (max 16MB per chunk)")
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])

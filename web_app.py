@@ -4,7 +4,6 @@ Flask web application for YouTube Audio Extractor
 Provides a REST API for the web UI
 """
 
-import os
 from pathlib import Path
 from flask import Flask, send_from_directory, send_file
 from flask_cors import CORS

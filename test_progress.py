@@ -4,8 +4,6 @@ Test script for the progress tracking functionality
 """
 
 import time
-import threading
-from youtube_audio_extractor.core import download_audio_with_progress
 
 def test_progress_hook(data):
     """Test progress hook function"""
