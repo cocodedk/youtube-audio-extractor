@@ -4,7 +4,6 @@ Provides centralized logging configuration and per-download loggers
 """
 
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
@@ -141,7 +140,7 @@ def log_download_error(download_id: str, error: Exception, context: str = None):
         logger.error(f"Error: {str(error)}")
 
     # Log the full traceback at debug level
-    logger.debug(f"Full traceback:", exc_info=True)
+    logger.debug("Full traceback:", exc_info=True)
 
 
 # Initialize main logger when module is imported

@@ -6,28 +6,28 @@ Test script to verify YouTube Audio Extractor installation
 def test_imports():
     """Test if all required packages can be imported."""
     try:
-        import yt_dlp
+        import yt_dlp  # noqa: F401
         print("✅ yt-dlp imported successfully")
     except ImportError as e:
         print(f"❌ Failed to import yt-dlp: {e}")
         return False
 
     try:
-        import click
+        import click  # noqa: F401
         print("✅ click imported successfully")
     except ImportError as e:
         print(f"❌ Failed to import click: {e}")
         return False
 
     try:
-        import requests
+        import requests  # noqa: F401
         print("✅ requests imported successfully")
     except ImportError as e:
         print(f"❌ Failed to import requests: {e}")
         return False
 
     try:
-        import tqdm
+        import tqdm  # noqa: F401
         print("✅ tqdm imported successfully")
     except ImportError as e:
         print(f"❌ Failed to import tqdm: {e}")
@@ -38,7 +38,6 @@ def test_imports():
 
 def test_ffmpeg():
     """Test if FFmpeg is available in the system."""
-    import subprocess
     import shutil
 
     if shutil.which('ffmpeg'):
@@ -53,7 +52,7 @@ def test_ffmpeg():
 def test_main_script():
     """Test if the main script can be imported."""
     try:
-        import youtube_audio_extractor
+        import youtube_audio_extractor  # noqa: F401
         print("✅ youtube_audio_extractor module imported successfully")
         return True
     except ImportError as e:

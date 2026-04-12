@@ -106,10 +106,10 @@ def download_playlist(url, output_dir="downloads", quality="best", bitrate="192"
     click.echo(f"🎚️  Audio quality: {bitrate} kbps")
 
     if split_large_files:
-        click.echo(f"✂️  Large file splitting: Enabled (max 16MB per chunk)")
+        click.echo("✂️  Large file splitting: Enabled (max 16MB per chunk)")
 
     if split_by_chapters:
-        click.echo(f"📚  Chapter-based splitting: Enabled")
+        click.echo("📚  Chapter-based splitting: Enabled")
 
     # Determine range of videos to download
     total_videos = len(entries)
@@ -148,7 +148,7 @@ def download_playlist(url, output_dir="downloads", quality="best", bitrate="192"
             click.echo(f"❌ [{i}/{end_idx}] Failed to download: {video_title}")
 
     # Summary
-    click.echo(f"\n🎯 Download completed!")
+    click.echo("\n🎯 Download completed!")
     click.echo(f"✅ Successful: {successful_downloads}")
     click.echo(f"❌ Failed: {failed_downloads}")
     click.echo(f"📁 All files saved to: {playlist_dir}")
@@ -195,13 +195,13 @@ def download_playlist_with_progress(url, output_dir="downloads", quality="best",
         if progress_hook:
             progress_hook({'status': 'info', 'message': 'Large file splitting: Enabled (max 16MB per chunk)'})
         else:
-            click.echo(f"✂️  Large file splitting: Enabled (max 16MB per chunk)")
+            click.echo("✂️  Large file splitting: Enabled (max 16MB per chunk)")
 
     if split_by_chapters:
         if progress_hook:
             progress_hook({'status': 'info', 'message': 'Chapter-based splitting: Enabled'})
         else:
-            click.echo(f"📚  Chapter-based splitting: Enabled")
+            click.echo("📚  Chapter-based splitting: Enabled")
 
     # Determine range of videos to download
     total_videos = len(entries)
@@ -283,7 +283,7 @@ def download_playlist_with_progress(url, output_dir="downloads", quality="best",
             'output_dir': str(playlist_dir)
         })
     else:
-        click.echo(f"\n🎯 Download completed!")
+        click.echo("\n🎯 Download completed!")
         click.echo(f"✅ Successful: {successful_downloads}")
         click.echo(f"❌ Failed: {failed_downloads}")
         click.echo(f"📁 All files saved to: {playlist_dir}")
@@ -297,7 +297,7 @@ def download_playlist_video(url, output_dir, quality, bitrate, split_large_files
         # Configure yt-dlp options for this video
         ydl_opts = {
             'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
-            'format': f'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if quality == "best" else quality,
+            'format': 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if quality == "best" else quality,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -326,9 +326,9 @@ def download_playlist_video(url, output_dir, quality, bitrate, split_large_files
                     # Remove original file after successful chapter splitting
                     downloaded_file.unlink()
                 else:
-                    click.echo(f"⚠️  Chapter splitting failed for video")
+                    click.echo("⚠️  Chapter splitting failed for video")
             else:
-                click.echo(f"ℹ️  No chapters found, keeping original file")
+                click.echo("ℹ️  No chapters found, keeping original file")
 
         # Handle size-based splitting (if requested and not already handled by chapters)
         elif split_large_files and file_size_mb > 16:
@@ -336,7 +336,7 @@ def download_playlist_video(url, output_dir, quality, bitrate, split_large_files
                 # Remove original file after successful splitting
                 downloaded_file.unlink()
             else:
-                click.echo(f"⚠️  File splitting failed for video")
+                click.echo("⚠️  File splitting failed for video")
 
         return True
 
@@ -351,7 +351,7 @@ def download_playlist_video_with_progress(url, output_dir, quality, bitrate, spl
         # Configure yt-dlp options for this video
         ydl_opts = {
             'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
-            'format': f'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if quality == "best" else quality,
+            'format': 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if quality == "best" else quality,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -389,12 +389,12 @@ def download_playlist_video_with_progress(url, output_dir, quality, bitrate, spl
                     if progress_hook:
                         progress_hook({'status': 'warning', 'message': 'Chapter splitting failed for video'})
                     else:
-                        click.echo(f"⚠️  Chapter splitting failed for video")
+                        click.echo("⚠️  Chapter splitting failed for video")
             else:
                 if progress_hook:
                     progress_hook({'status': 'info', 'message': 'No chapters found, keeping original file'})
                 else:
-                    click.echo(f"ℹ️  No chapters found, keeping original file")
+                    click.echo("ℹ️  No chapters found, keeping original file")
 
         # Handle size-based splitting (if requested and not already handled by chapters)
         elif split_large_files and file_size_mb > 16:
@@ -407,7 +407,7 @@ def download_playlist_video_with_progress(url, output_dir, quality, bitrate, spl
                 if progress_hook:
                     progress_hook({'status': 'warning', 'message': 'File splitting failed for video'})
                 else:
-                    click.echo(f"⚠️  File splitting failed for video")
+                    click.echo("⚠️  File splitting failed for video")
 
         return True
 
@@ -483,5 +483,5 @@ def list_playlist_videos(url):
         # Check if video has chapters
         video_url = entry.get('url')
         if video_url and has_chapters(video_url):
-            click.echo(f"     📚 Has chapters")
+            click.echo("     📚 Has chapters")
         click.echo()

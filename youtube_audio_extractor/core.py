@@ -65,7 +65,7 @@ def download_audio_with_progress(url, output_dir="downloads", format_id=None, qu
     # Configure yt-dlp options
     ydl_opts = {
         'outtmpl': os.path.join(final_output_dir, '%(title)s.%(ext)s'),
-        'format': f'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if format_id is None else format_id,
+        'format': 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio' if format_id is None else format_id,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -99,13 +99,13 @@ def download_audio_with_progress(url, output_dir="downloads", format_id=None, qu
             if progress_hook:
                 progress_hook({'status': 'info', 'message': 'Large file splitting: Enabled (max 16MB per chunk)'})
             else:
-                click.echo(f"✂️  Large file splitting: Enabled (max 16MB per chunk)")
+                click.echo("✂️  Large file splitting: Enabled (max 16MB per chunk)")
 
         if split_by_chapters:
             if progress_hook:
                 progress_hook({'status': 'info', 'message': 'Chapter-based splitting: Enabled'})
             else:
-                click.echo(f"📚  Chapter-based splitting: Enabled")
+                click.echo("📚  Chapter-based splitting: Enabled")
             # Check if video has chapters before downloading
             if not has_chapters(url):
                 if progress_hook:

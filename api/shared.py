@@ -6,7 +6,7 @@ import time
 import queue
 import uuid
 from typing import Dict, Any, Callable
-from .logging_utils import main_logger, log_download_progress, get_download_logger
+from .logging_utils import main_logger, get_download_logger
 
 # Global storage for download progress and queues
 download_progress: Dict[str, Dict[str, Any]] = {}
