@@ -1,0 +1,33 @@
+# Normalize all text files to LF on commit
+* text=auto eol=lf
+
+# Explicitly declare common text files
+*.py        text eol=lf
+*.js        text eol=lf
+*.ts        text eol=lf
+*.tsx       text eol=lf
+*.sh        text eol=lf
+*.fish      text eol=lf
+*.json      text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+*.md        text eol=lf
+*.html      text eol=lf
+*.css       text eol=lf
+*.toml      text eol=lf
+*.txt       text eol=lf
+*.cfg       text eol=lf
+
+# Binary files — never diff or convert
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.svg       binary
+*.pdf       binary
+*.zip       binary
+*.tar.gz    binary
+*.mp3       binary
+*.mp4       binary
+*.wav       binary

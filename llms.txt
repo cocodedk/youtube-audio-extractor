@@ -1,0 +1,32 @@
+# YouTube Audio Extractor
+
+> A free, open-source Python tool to extract audio from YouTube videos and playlists.
+
+## Overview
+
+YouTube Audio Extractor provides both a Flask web interface and a command-line tool for extracting audio from YouTube content. Features include bitrate control, automatic chapter-based splitting, playlist support, and cross-platform compatibility.
+
+## Links
+
+- GitHub: https://github.com/cocodedk/youtube-audio-extractor
+- Website (EN): https://cocodedk.github.io/youtube-audio-extractor/
+- Website (FA): https://cocodedk.github.io/youtube-audio-extractor/fa/
+- Download: https://github.com/cocodedk/youtube-audio-extractor/releases/latest/download/youtube-audio-extractor.zip
+- Author: https://cocode.dk
+- LinkedIn: https://linkedin.com/in/babakbandpey
+
+## Technical Details
+
+- Language: Python 3.12
+- Framework: Flask 3.0 (web), Click 8 (CLI)
+- Core dependency: yt-dlp
+- License: Apache-2.0
+
+## Key Files
+
+- `youtube_audio_extractor/` — Core extraction logic
+- `api/` — Flask REST API endpoints
+- `web/` — Static web UI assets
+- `web_app.py` — Flask application entry point
+- `requirements.txt` — Python dependencies
+- `CLAUDE.md` — AI session instructions

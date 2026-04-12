@@ -1,8 +1,17 @@
-# 🎵 YouTube Audio Extractor
+# YouTube Audio Extractor
 
 A powerful, user-friendly tool to extract audio from YouTube videos and playlists. Available as both a **modern web interface** and **command-line tool** with advanced features like bitrate control, automatic file splitting, and chapter-based audio extraction.
 
-## 🚀 Quick Start
+## Website
+
+- [English](https://cocodedk.github.io/youtube-audio-extractor/)
+- [فارسی (Persian)](https://cocodedk.github.io/youtube-audio-extractor/fa/)
+
+## Download
+
+[**Download YouTube Audio Extractor**](https://github.com/cocodedk/youtube-audio-extractor/releases/latest/download/youtube-audio-extractor.zip)
+
+## Quick Start
 
 ### 🌐 **Web Interface (Recommended for Most Users)**
 
@@ -403,39 +412,14 @@ We provide several startup scripts for different needs:
 
 ---
 
-## 📄 License
+## Author
 
-This project is licensed under the **MIT License with Attribution Requirements**.
+**Babak Bandpey** — [cocode.dk](https://cocode.dk) | [LinkedIn](https://linkedin.com/in/babakbandpey) | [GitHub](https://github.com/cocodedk)
 
-**Key Points:**
-- ✅ Free to use, modify, and distribute
-- ✅ Commercial use permitted with attribution
-- ✅ Must credit original author
-- ⚠️ No warranty provided
-- ⚠️ Users responsible for YouTube ToS compliance
+## License
+
+Apache-2.0 | © 2026 [Cocode](https://cocode.dk) | Created by [Babak Bandpey](https://linkedin.com/in/babakbandpey)
 
 **Full license:** [LICENSE](LICENSE)
 
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please:
-
-1. **Follow license terms** - Maintain attribution requirements
-2. **Respect copyright** - Don't enable unauthorized content downloading
-3. **Test thoroughly** - Ensure changes work across platforms
-4. **Document changes** - Update README and code comments
-
----
-
-## 📞 Support
-
-**For questions or issues:**
-- 📧 Contact: COCODE.DK
-- 📖 Check troubleshooting section above
-- 🐛 Report bugs with detailed error messages
-
----
-
-**⚠️ Disclaimer**: This tool is for educational and personal use only. Users are responsible for complying with YouTube's Terms of Service and applicable copyright laws. The authors do not condone unauthorized downloading of copyrighted content.
+**⚠️ Disclaimer**: This tool is for educational and personal use only. Users are responsible for complying with YouTube's Terms of Service and applicable copyright laws.
