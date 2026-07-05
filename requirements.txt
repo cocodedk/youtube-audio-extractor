@@ -1,5 +1,5 @@
 yt-dlp>=2025.10.14
-requests==2.31.0
+requests==2.34.2
 click==8.1.8
 tqdm==4.67.3
 flask==3.1.3
