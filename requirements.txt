@@ -1,7 +1,7 @@
 yt-dlp>=2025.10.14
 requests==2.31.0
 click==8.1.8
-tqdm==4.67.3
+tqdm==4.68.3
 flask==3.1.3
 flask-cors==4.0.0
 python-dotenv==1.0.0
